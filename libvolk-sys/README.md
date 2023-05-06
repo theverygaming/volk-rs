@@ -1,0 +1,1 @@
+generated with: ``~/.cargo/bin/bindgen /usr/include/volk/volk.h --allowlist-function '^volk_.*' --allowlist-type '^(volk_|p_).*' --allowlist-var '^(VOLK_|volk_).*' --blocklist-function '^volk_.*(_func_desc|_manual)' --blocklist-type '^volk.*_func_desc(_t)?' -o src/volk.rs -- -x c++``

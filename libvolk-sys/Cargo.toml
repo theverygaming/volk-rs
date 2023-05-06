@@ -1,0 +1,12 @@
+[package]
+name = "libvolk-sys"
+version = "0.0.1"
+links = "volk"
+build = "build.rs"
+edition = "2021"
+
+[dependencies]
+libc = "0.2"
+
+[lib]
+path = "src/volk.rs"
