@@ -1,4 +1,5 @@
 [workspace]
 members = [
-  "libvolk-sys"
+  "libvolk-sys",
+  "volk-rs"
 ]

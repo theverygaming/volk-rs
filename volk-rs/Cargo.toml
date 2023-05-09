@@ -1,0 +1,16 @@
+[package]
+name = "volk-rs"
+version = "0.0.1"
+edition = "2021"
+description = "safe libvolk wrapper"
+
+[dependencies]
+num-complex = "0.4.3"
+libc = "0.2"
+
+[dependencies.libvolk-sys]
+path = "../libvolk-sys"
+version = "0.0.1"
+
+[lib]
+crate-type = ["lib"]
