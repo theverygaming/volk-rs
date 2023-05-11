@@ -2563,3 +2563,10 @@ fn __bindgen_test_layout_std_complex_open0_float_close0_instantiation() {
         )
     );
 }
+
+#[test]
+fn linked() {
+    unsafe {
+        volk_free(volk_malloc(500, volk_get_alignment()));
+    }
+}

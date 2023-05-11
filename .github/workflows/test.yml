@@ -26,18 +26,25 @@ jobs:
           toolchain: stable
       - name: install dependencies
         run: pip install mako
-      - name: download and extract volk
+      - name: download and build volk
         run: |
           Invoke-WebRequest -Uri "https://github.com/gnuradio/volk/releases/download/v2.5.2/volk-2.5.2.tar.gz" -OutFile "${{runner.workspace}}/volk-2.5.2.tar.gz"
           tar -xvzf "${{runner.workspace}}/volk-2.5.2.tar.gz" -C "${{runner.workspace}}"
-      - name: build volk
-        run: |
           cd "${{runner.workspace}}/volk-2.5.2"
           mkdir build && cd build && cmake .. && cd ..
           cmake --build build --config Release -j2
       - name: build release
-        run: $env:VOLK_LIB_DIR="${{runner.workspace}}/volk-2.5.2/build/lib/Release/"; cargo build --release
+        run: |
+          $env:VOLK_LIB_DIR="${{runner.workspace}}/volk-2.5.2/build/lib/Release/"
+          $env:CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_LINKER="lld-link"
+          cargo build --release
       - name: test release
-        run: $env:VOLK_LIB_DIR="${{runner.workspace}}/volk-2.5.2/build/lib/Release/"; cargo test --release
+        run: |
+          $env:VOLK_LIB_DIR="${{runner.workspace}}/volk-2.5.2/build/lib/Release/"
+          $env:CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_LINKER="lld-link"
+          cargo test --release
       - name: test
-        run: $env:VOLK_LIB_DIR="${{runner.workspace}}/volk-2.5.2/build/lib/Release/"; cargo test
+        run: |
+          $env:VOLK_LIB_DIR="${{runner.workspace}}/volk-2.5.2/build/lib/Release/"
+          $env:CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_LINKER="lld-link"
+          cargo test
