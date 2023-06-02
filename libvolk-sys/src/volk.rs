@@ -8,8 +8,8 @@ pub const VOLK_VERSION: u32 = 8514;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct std_complex<_Tp> {
-    pub _M_real: _Tp,
-    pub _M_imag: _Tp,
+    pub real: _Tp,
+    pub imag: _Tp,
     pub _phantom_0: ::std::marker::PhantomData<::std::cell::UnsafeCell<_Tp>>,
 }
 pub type std_complex_value_type<_Tp> = _Tp;
