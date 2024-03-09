@@ -4,10 +4,8 @@ jobs:
   build_and_test_linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
       - name: install dependencies
         run: sudo apt-get install -y libvolk2-dev
       - name: build release
@@ -20,10 +18,8 @@ jobs:
   build_and_test_windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
       - name: install dependencies
         run: pip install mako
       - name: download and build volk
