@@ -58,6 +58,9 @@ impl<T: Sized> Drop for AlignedVec<T> {
     }
 }
 
+// :trolley:
+unsafe impl<T: Sized> Send for AlignedVec<T> {}
+
 impl<T: Sized> std::ops::Deref for AlignedVec<T> {
     type Target = [T];
     fn deref(&self) -> &[T] {
