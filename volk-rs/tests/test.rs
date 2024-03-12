@@ -48,28 +48,26 @@ fn vector() {
 
 #[test]
 fn volk_16i_32fc_dot_prod_32fc() {
-    let mut input: AlignedVec<core::ffi::c_short> = AlignedVec::from_elem(1, 500);
+    let input: AlignedVec<core::ffi::c_short> = AlignedVec::from_elem(1, 500);
     let mut taps: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 5.0, i: 2.0 }, 500);
     let mut result: complex<f32> = complex { r: 0.0, i: 0.0 };
-    volk_rs::kernels::volk_16i_32fc_dot_prod_32fc(&mut result, &mut input, &mut taps);
+    volk_rs::kernels::volk_16i_32fc_dot_prod_32fc(&input, &mut result, &mut taps);
     assert!(result.r != 0.0 && result.i != 0.0, "borked");
 }
 
 #[test]
 fn v32fc_s32fc_x2_rotator_32fc() {
-    let mut input: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 5.0, i: 2.0 }, 5000);
+    let input: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 5.0, i: 2.0 }, 5000);
     let mut result: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 5.0, i: 2.0 }, 5000);
     let phase_inc: complex<f32> = complex { r: 0.5, i: 1.0 };
     let mut phase: complex<f32> = complex { r: 1.0, i: 0.0 };
-    volk_rs::kernels::volk_32fc_s32fc_x2_rotator_32fc(Some(&mut result), &mut input, phase_inc, &mut phase);
-    volk_rs::kernels::volk_32fc_s32fc_x2_rotator_32fc(None, &mut input, phase_inc, &mut phase);
+    volk_rs::kernels::volk_32fc_s32fc_x2_rotator_32fc(&input,&mut result, phase_inc, &mut phase);
 }
 
 #[test]
 fn volk_32fc_32f_multiply_32fc() {
-    let mut input: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 0.123, i: 0.576 }, 5000);
+    let input: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 0.123, i: 0.576 }, 5000);
     let input_f: AlignedVec<f32> = AlignedVec::from_elem(0.5, 5000);
     let mut result: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 0.0, i: 0.0 }, 5000);
-    volk_rs::kernels::volk_32fc_32f_multiply_32fc(Some(&mut result), &mut input, &input_f);
-    volk_rs::kernels::volk_32fc_32f_multiply_32fc(None, &mut input, &input_f);
+    volk_rs::kernels::volk_32fc_32f_multiply_32fc(&input, &mut result, &input_f);
 }
