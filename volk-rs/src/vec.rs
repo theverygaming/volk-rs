@@ -24,6 +24,15 @@ impl<T: Sized> AlignedVec<T> {
         }
     }
 
+    pub fn new_zeroed(n: usize) -> Self {
+        let mut v = Self::new(n);
+        v.length = n;
+        unsafe {
+            std::ptr::write_bytes(v.ptr.as_ptr(), 0, n);
+        }
+        v
+    }
+
     pub fn as_mut<'a>(&'a mut self) -> &'a mut T {
         unsafe { self.ptr.as_mut() }
     }
