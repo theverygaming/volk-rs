@@ -1,12 +1,12 @@
-use crate::{types::*};
+use num_complex::Complex;
 use volk_sys::std_complex;
 
-pub fn volk_16i_32fc_dot_prod_32fc(input: &[core::ffi::c_short], output: &mut complex<f32>, taps: &mut [complex<f32>]) {
+pub fn volk_16i_32fc_dot_prod_32fc(input: &[core::ffi::c_short], output: &mut Complex<f32>, taps: &mut [Complex<f32>]) {
     assert!(input.len() == taps.len(), "mismatched lengths");
 
     unsafe {
         volk_sys::volk_16i_32fc_dot_prod_32fc.unwrap_unchecked()(
-            output as *mut complex<f32> as *mut std_complex<f32>,
+            output as *mut Complex<f32> as *mut std_complex<f32>,
             input.as_ptr(),
             taps.as_mut_ptr() as *mut std_complex<f32>,
             taps.len() as core::ffi::c_uint,
@@ -76,7 +76,7 @@ pub fn volk_16u_byteswap_u8(vector: &mut [u8]) {
 // TODO: volk_32fc_32f_add_32fc
 // TODO: volk_32fc_32f_dot_prod_32fc
 
-pub fn volk_32fc_32f_multiply_32fc(input: &[complex<f32>], output: &mut [complex<f32>], input_f: &[f32]) {
+pub fn volk_32fc_32f_multiply_32fc(input: &[Complex<f32>], output: &mut [Complex<f32>], input_f: &[f32]) {
     assert!(input.len() == output.len(), "mismatched lengths");
     assert!(input.len() == input_f.len(), "mismatched lengths");
 
@@ -103,7 +103,7 @@ pub fn volk_32fc_32f_multiply_32fc(input: &[complex<f32>], output: &mut [complex
 // TODO: volk_32fc_index_min_16u
 // TODO: volk_32fc_index_min_32u
 
-pub fn volk_32fc_magnitude_32f(magnitude_vector: &mut [f32], complex_vector: &[complex<f32>]) {
+pub fn volk_32fc_magnitude_32f(magnitude_vector: &mut [f32], complex_vector: &[Complex<f32>]) {
     assert!(magnitude_vector.len() == complex_vector.len(), "mismatched lengths");
 
     unsafe {
@@ -121,7 +121,7 @@ pub fn volk_32fc_magnitude_32f(magnitude_vector: &mut [f32], complex_vector: &[c
 // TODO: volk_32fc_s32f_atan2_32f
 // TODO: volk_32fc_s32fc_multiply_32fc
 
-pub fn volk_32fc_s32fc_x2_rotator_32fc(input: &[complex<f32>], output: &mut [complex<f32>], phase_inc: complex<f32>, phase: &mut complex<f32>) {
+pub fn volk_32fc_s32fc_x2_rotator_32fc(input: &[Complex<f32>], output: &mut [Complex<f32>], phase_inc: Complex<f32>, phase: &mut Complex<f32>) {
     assert!(input.len() == output.len(), "mismatched lengths");
 
     unsafe {
@@ -129,11 +129,11 @@ pub fn volk_32fc_s32fc_x2_rotator_32fc(input: &[complex<f32>], output: &mut [com
             output.as_mut_ptr() as *mut std_complex<f32>,
             input.as_ptr() as *const std_complex<f32>,
             volk_sys::lv_32fc_t {
-                real: phase_inc.r,
-                imag: phase_inc.i,
+                real: phase_inc.re,
+                imag: phase_inc.im,
                 _phantom_0: Default::default(),
             },
-            phase as *mut complex<f32> as *mut std_complex<f32>,
+            phase as *mut Complex<f32> as *mut std_complex<f32>,
             input.len() as core::ffi::c_uint,
         );
     }
@@ -157,10 +157,10 @@ pub fn volk_32fc_s32fc_x2_rotator_32fc(input: &[complex<f32>], output: &mut [com
 // TODO: volk_32f_expfast_32f
 // TODO: volk_32f_index_max_16u
 
-pub fn volk_32f_index_max_32u(input: &[f32], output: &mut [u32]) {
+pub fn volk_32f_index_max_32u(input: &[f32], output: &mut u32) {
     unsafe {
         volk_sys::volk_32f_index_max_32u.unwrap_unchecked()(
-            output.as_mut_ptr(),
+            output,
             input.as_ptr(),
             input.len() as u32
         );

@@ -1,10 +1,5 @@
-use volk_rs::{self, types::complex, vec::AlignedVec};
-
-#[test]
-fn complex_type() {
-    assert!(std::mem::size_of::<complex<f32>>() == std::mem::size_of::<f32>() * 2, "broken complex type");
-    assert!(std::mem::size_of::<complex<u16>>() == std::mem::size_of::<u16>() * 2, "broken complex type");
-}
+use num_complex::Complex;
+use volk_rs::{self, vec::AlignedVec};
 
 #[test]
 fn vector() {
@@ -49,25 +44,25 @@ fn vector() {
 #[test]
 fn volk_16i_32fc_dot_prod_32fc() {
     let input: AlignedVec<core::ffi::c_short> = AlignedVec::from_elem(1, 500);
-    let mut taps: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 5.0, i: 2.0 }, 500);
-    let mut result: complex<f32> = complex { r: 0.0, i: 0.0 };
+    let mut taps: AlignedVec<Complex<f32>> = AlignedVec::from_elem(Complex { re: 5.0, im: 2.0 }, 500);
+    let mut result: Complex<f32> = Complex { re: 0.0, im: 0.0 };
     volk_rs::kernels::volk_16i_32fc_dot_prod_32fc(&input, &mut result, &mut taps);
-    assert!(result.r != 0.0 && result.i != 0.0, "borked");
+    assert!(result.re != 0.0 && result.im != 0.0, "borked");
 }
 
 #[test]
 fn v32fc_s32fc_x2_rotator_32fc() {
-    let input: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 5.0, i: 2.0 }, 5000);
-    let mut result: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 5.0, i: 2.0 }, 5000);
-    let phase_inc: complex<f32> = complex { r: 0.5, i: 1.0 };
-    let mut phase: complex<f32> = complex { r: 1.0, i: 0.0 };
+    let input: AlignedVec<Complex<f32>> = AlignedVec::from_elem(Complex { re: 5.0, im: 2.0 }, 5000);
+    let mut result: AlignedVec<Complex<f32>> = AlignedVec::from_elem(Complex { re: 5.0, im: 2.0 }, 5000);
+    let phase_inc: Complex<f32> = Complex { re: 0.5, im: 1.0 };
+    let mut phase: Complex<f32> = Complex { re: 1.0, im: 0.0 };
     volk_rs::kernels::volk_32fc_s32fc_x2_rotator_32fc(&input,&mut result, phase_inc, &mut phase);
 }
 
 #[test]
 fn volk_32fc_32f_multiply_32fc() {
-    let input: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 0.123, i: 0.576 }, 5000);
+    let input: AlignedVec<Complex<f32>> = AlignedVec::from_elem(Complex { re: 0.123, im: 0.576 }, 5000);
     let input_f: AlignedVec<f32> = AlignedVec::from_elem(0.5, 5000);
-    let mut result: AlignedVec<complex<f32>> = AlignedVec::from_elem(complex { r: 0.0, i: 0.0 }, 5000);
+    let mut result: AlignedVec<Complex<f32>> = AlignedVec::from_elem(Complex { re: 0.0, im: 0.0 }, 5000);
     volk_rs::kernels::volk_32fc_32f_multiply_32fc(&input, &mut result, &input_f);
 }
