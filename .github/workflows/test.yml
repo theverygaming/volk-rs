@@ -29,11 +29,16 @@ jobs:
       - name: download and build volk
         if: steps.cache-volk.outputs.cache-hit != 'true'
         run: |
-          pip install mako
+          C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw64 -c "pacman --noconfirm -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja mingw-w64-x86_64-python-pip"
+          C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw64 -c "pip install mako"
           Invoke-WebRequest -Uri "https://github.com/gnuradio/volk/releases/download/v3.1.2/volk-3.1.2.tar.gz" -OutFile "${{runner.workspace}}/volk-3.1.2.tar.gz"
           tar -xvzf "${{runner.workspace}}/volk-3.1.2.tar.gz" -C "${{runner.workspace}}"
           cd "${{runner.workspace}}/volk-3.1.2"
-          mkdir build && cd build && cmake .. && cd ..
+          mkdir build && cd build
+          C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw64 -c "cmake .. -DCMAKE_GNUtoMS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS=-static-libgcc"
+          C:/msys64/msys2_shell.cmd -defterm -here -no-start -mingw64 -c "ninja"
+          tree
+          cd ..
           cmake --build build --config Release -j2
       - name: build release
         run: |
