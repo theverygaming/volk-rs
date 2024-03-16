@@ -31,16 +31,16 @@ jobs:
           cmake --build build --config Release -j2
       - name: build release
         run: |
-          $env:VOLK_LIB_DIR="${{runner.workspace}}/volk-3.1.2/build/lib/Release/"
+          $env:VOLK_LIB_DIR="${{runner.workspace}}\volk-3.1.2\build\lib\Release\"
           $env:LIB="${{runner.workspace}}/volk-3.1.2/build/lib/Release/"
           cargo build --release
       - name: test release
         run: |
-          $env:VOLK_LIB_DIR="${{runner.workspace}}/volk-3.1.2/build/lib/Release/"
+          $env:VOLK_LIB_DIR="${{runner.workspace}}\volk-3.1.2\build\lib\Release\"
           $env:LIB="${{runner.workspace}}/volk-3.1.2/build/lib/Release/"
           cargo test --release
       - name: test
         run: |
-          $env:VOLK_LIB_DIR="${{runner.workspace}}/volk-3.1.2/build/lib/Release/"
+          $env:VOLK_LIB_DIR="${{runner.workspace}}\volk-3.1.2\build\lib\Release\"
           $env:LIB="${{runner.workspace}}/volk-3.1.2/build/lib/Release/"
           cargo test
