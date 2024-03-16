@@ -20,10 +20,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - name: install dependencies
-        run: pip install mako
+      - name: cache volk
+        id: cache-volk
+        uses: actions/cache@v4
+        with:
+          path: ${{runner.workspace}}/volk-3.1.2
+          key: ${{ runner.os }}-volk-3.1.2
       - name: download and build volk
+        if: steps.cache-volk.outputs.cache-hit != 'true'
         run: |
+          pip install mako
           Invoke-WebRequest -Uri "https://github.com/gnuradio/volk/releases/download/v3.1.2/volk-3.1.2.tar.gz" -OutFile "${{runner.workspace}}/volk-3.1.2.tar.gz"
           tar -xvzf "${{runner.workspace}}/volk-3.1.2.tar.gz" -C "${{runner.workspace}}"
           cd "${{runner.workspace}}/volk-3.1.2"
@@ -32,15 +38,12 @@ jobs:
       - name: build release
         run: |
           $env:VOLK_LIB_DIR="${{runner.workspace}}\volk-3.1.2\build\lib\Release\"
-          $env:LIB="${{runner.workspace}}/volk-3.1.2/build/lib/Release/"
           cargo build --release
       - name: test release
         run: |
           $env:VOLK_LIB_DIR="${{runner.workspace}}\volk-3.1.2\build\lib\Release\"
-          $env:LIB="${{runner.workspace}}/volk-3.1.2/build/lib/Release/"
           cargo test --release
       - name: test
         run: |
           $env:VOLK_LIB_DIR="${{runner.workspace}}\volk-3.1.2\build\lib\Release\"
-          $env:LIB="${{runner.workspace}}/volk-3.1.2/build/lib/Release/"
           cargo test
