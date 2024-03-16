@@ -18,7 +18,7 @@ fn main() {
                 std::fs::copy(volkdir.join("libvolk.lib"), out_dir.join("volk.lib")).unwrap();
             }
         }
-        println!("cargo:rustc-link-search=native={}", out_dir.display());
+        println!("cargo:rustc-link-search={}", out_dir.display());
         println!("cargo:rustc-link-lib=volk");
     } else {
         println!("cargo:rustc-link-lib=volk");
