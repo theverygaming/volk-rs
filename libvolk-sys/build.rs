@@ -1,6 +1,6 @@
 fn main() {
     if cfg!(target_os = "windows") {
-        let out_dir = std::path::PathBuf::from(std::env::var("OUT_DIR").unwrap());
+        let out_dir = std::path::PathBuf::from(std::env::var("OUT_DIR").unwrap()).join("lib");
         let volkdir = std::path::PathBuf::from(std::env::var("VOLK_LIB_DIR").expect("VOLK_LIB_DIR must be set to a valid path"));
 
         if !out_dir.join("volk.dll").exists() {
@@ -11,7 +11,6 @@ fn main() {
         }
         println!("cargo:rustc-link-search=native={}", out_dir.display());
         println!("cargo:rustc-link-lib=volk");
-
     } else {
         println!("cargo:rustc-link-lib=volk");
     }
