@@ -5,5 +5,8 @@ stdenv.mkDerivation {
     rustc
     cargo
     volk
+    rust-bindgen
+    rustfmt
   ];
+  shellHook = "export VOLK_PATH=${volk}";
 }

@@ -4,11 +4,11 @@ fn main() {
         std::fs::create_dir_all(&out_dir).unwrap();
         let volkdir = std::path::PathBuf::from(std::env::var("VOLK_LIB_DIR").expect("VOLK_LIB_DIR must be set to a valid path"));
 
-        if !out_dir.join("volk.dll").exists() {
+        if !out_dir.join("libvolk.dll").exists() {
             if volkdir.join("volk.dll").exists() {
-                std::fs::copy(volkdir.join("volk.dll"), out_dir.join("volk.dll")).unwrap();
+                std::fs::copy(volkdir.join("volk.dll"), out_dir.join("libvolk.dll")).unwrap();
             } else {
-                std::fs::copy(volkdir.join("libvolk.dll"), out_dir.join("volk.dll")).unwrap();
+                std::fs::copy(volkdir.join("libvolk.dll"), out_dir.join("libvolk.dll")).unwrap();
             }
         }
         if !out_dir.join("volk.lib").exists() {
