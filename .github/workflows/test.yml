@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - name: install dependencies
-        run: sudo apt-get install -y libvolk2-dev
+        run: sudo apt-get install -y libvolk-dev
       - name: build release
         run: cargo build --release
       - name: test release
