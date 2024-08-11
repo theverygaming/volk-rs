@@ -82,3 +82,12 @@ impl<T: Sized> std::ops::DerefMut for AlignedVec<T> {
         unsafe { std::slice::from_raw_parts_mut(self.ptr.as_ptr(), self.length) }
     }
 }
+
+impl<T: Sized + Copy> Clone for AlignedVec<T> {
+    fn clone(&self) -> Self {
+        let mut new = Self::new(self.length);
+        new.length = self.length;
+        new.copy_from_slice(self);
+        new
+    }
+}

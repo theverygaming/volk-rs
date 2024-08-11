@@ -67,14 +67,52 @@ pub fn volk_16u_byteswap_u8(vector: &mut [u8]) {
 // TODO: volk_32f_64f_add_64f
 // TODO: volk_32f_64f_multiply_64f
 // TODO: volk_32f_8u_polarbutterfly_32f
-// TODO: volk_32f_accumulator_s32f
+
+pub enum GenericFloatVector<'a> {
+    F32(&'a[f32]),
+    FC32(&'a[Complex<f32>]),
+}
+
+pub fn volk_32f_accumulator_s32f(input: GenericFloatVector, output: &mut f32) {
+    unsafe {
+        match input {
+            GenericFloatVector::F32(inp) => {
+                volk_sys::volk_32f_accumulator_s32f.unwrap_unchecked()(
+                    output,
+                    inp.as_ptr() as *const f32,
+                    inp.len() as core::ffi::c_uint,
+                );
+            },
+            GenericFloatVector::FC32(inp) => {
+                volk_sys::volk_32f_accumulator_s32f.unwrap_unchecked()(
+                    output,
+                    inp.as_ptr() as *const f32,
+                    (inp.len() as core::ffi::c_uint) * 2,
+                );
+            },
+        }
+    }
+}
+
 // TODO: volk_32f_acos_32f
 // TODO: volk_32f_asin_32f
 // TODO: volk_32f_atan_32f
 // TODO: volk_32f_binary_slicer_32i
 // TODO: volk_32f_binary_slicer_8i
 // TODO: volk_32fc_32f_add_32fc
-// TODO: volk_32fc_32f_dot_prod_32fc
+
+pub fn volk_32fc_32f_dot_prod_32fc(input: &[Complex<f32>], output: &mut Complex<f32>, taps: &[f32]) {
+    assert!(input.len() == taps.len(), "mismatched lengths");
+
+    unsafe {
+        volk_sys::volk_32fc_32f_dot_prod_32fc.unwrap_unchecked()(
+            output as *mut Complex<f32> as *mut std_complex<f32>,
+            input.as_ptr() as *const std_complex<f32>,
+            taps.as_ptr(),
+            input.len() as core::ffi::c_uint,
+        );
+    }
+}
 
 pub fn volk_32fc_32f_multiply_32fc(input: &[Complex<f32>], output: &mut [Complex<f32>], input_f: &[f32]) {
     assert!(input.len() == output.len(), "mismatched lengths");
@@ -121,18 +159,19 @@ pub fn volk_32fc_magnitude_32f(magnitude_vector: &mut [f32], complex_vector: &[C
 // TODO: volk_32fc_s32f_atan2_32f
 // TODO: volk_32fc_s32fc_multiply_32fc
 
+#[deprecated(since="0.0.2", note="replaced by `volk_32fc_s32fc_x2_rotator2_32fc`")]
 pub fn volk_32fc_s32fc_x2_rotator_32fc(input: &[Complex<f32>], output: &mut [Complex<f32>], phase_inc: Complex<f32>, phase: &mut Complex<f32>) {
+    volk_32fc_s32fc_x2_rotator2_32fc(input, output, &phase_inc, phase);
+}
+
+pub fn volk_32fc_s32fc_x2_rotator2_32fc(input: &[Complex<f32>], output: &mut [Complex<f32>], phase_inc: &Complex<f32>, phase: &mut Complex<f32>) {
     assert!(input.len() == output.len(), "mismatched lengths");
 
     unsafe {
-        volk_sys::volk_32fc_s32fc_x2_rotator_32fc.unwrap_unchecked()(
+        volk_sys::volk_32fc_s32fc_x2_rotator2_32fc.unwrap_unchecked()(
             output.as_mut_ptr() as *mut std_complex<f32>,
             input.as_ptr() as *const std_complex<f32>,
-            volk_sys::lv_32fc_t {
-                real: phase_inc.re,
-                imag: phase_inc.im,
-                _phantom_0: Default::default(),
-            },
+            phase_inc as *const Complex<f32> as *const std_complex<f32>,
             phase as *mut Complex<f32> as *mut std_complex<f32>,
             input.len() as core::ffi::c_uint,
         );

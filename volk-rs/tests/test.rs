@@ -56,7 +56,7 @@ fn v32fc_s32fc_x2_rotator_32fc() {
     let mut result: AlignedVec<Complex<f32>> = AlignedVec::from_elem(Complex { re: 5.0, im: 2.0 }, 5000);
     let phase_inc: Complex<f32> = Complex { re: 0.5, im: 1.0 };
     let mut phase: Complex<f32> = Complex { re: 1.0, im: 0.0 };
-    volk_rs::kernels::volk_32fc_s32fc_x2_rotator_32fc(&input,&mut result, phase_inc, &mut phase);
+    volk_rs::kernels::volk_32fc_s32fc_x2_rotator2_32fc(&input,&mut result, &phase_inc, &mut phase);
 }
 
 #[test]
