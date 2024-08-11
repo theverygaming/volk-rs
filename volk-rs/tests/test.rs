@@ -42,6 +42,19 @@ fn vector() {
 }
 
 #[test]
+fn vector_swap() {
+    let mut a: AlignedVec<u64> = AlignedVec::from_elem(123, 2);
+    let mut b: AlignedVec<u64> = AlignedVec::from_elem(124, 2);
+    assert!(a[0] == 123 && a[1] == 123);
+    assert!(b[0] == 124 && b[1] == 124);
+
+    std::mem::swap(&mut a, &mut b);
+
+    assert!(a[0] == 124 && a[1] == 124);
+    assert!(b[0] == 123 && b[1] == 123);
+}
+
+#[test]
 fn volk_16i_32fc_dot_prod_32fc() {
     let input: AlignedVec<core::ffi::c_short> = AlignedVec::from_elem(1, 500);
     let mut taps: AlignedVec<Complex<f32>> = AlignedVec::from_elem(Complex { re: 5.0, im: 2.0 }, 500);
