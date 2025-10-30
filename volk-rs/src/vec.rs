@@ -67,8 +67,10 @@ impl<T: Sized> Drop for AlignedVec<T> {
     }
 }
 
+// FIXME: check if this is fine lmao
 // :trolley:
-unsafe impl<T: Sized> Send for AlignedVec<T> {}
+unsafe impl<T: Send> Send for AlignedVec<T> {}
+unsafe impl<T: Send> Sync for AlignedVec<T> {}
 
 impl<T: Sized> std::ops::Deref for AlignedVec<T> {
     type Target = [T];
