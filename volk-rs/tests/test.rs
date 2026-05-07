@@ -59,7 +59,7 @@ fn volk_16i_32fc_dot_prod_32fc() {
     let input: AlignedVec<core::ffi::c_short> = AlignedVec::from_elem(1, 500);
     let mut taps: AlignedVec<Complex<f32>> = AlignedVec::from_elem(Complex { re: 5.0, im: 2.0 }, 500);
     let mut result: Complex<f32> = Complex { re: 0.0, im: 0.0 };
-    volk_rs::kernels::volk_16i_32fc_dot_prod_32fc(&input, &mut result, &mut taps);
+    volk_rs::kernels::volk_16i_32fc_dot_prod_32fc(&mut result, &input, &mut taps);
     assert!(result.re != 0.0 && result.im != 0.0, "borked");
 }
 
@@ -69,7 +69,7 @@ fn v32fc_s32fc_x2_rotator_32fc() {
     let mut result: AlignedVec<Complex<f32>> = AlignedVec::from_elem(Complex { re: 5.0, im: 2.0 }, 5000);
     let phase_inc: Complex<f32> = Complex { re: 0.5, im: 1.0 };
     let mut phase: Complex<f32> = Complex { re: 1.0, im: 0.0 };
-    volk_rs::kernels::volk_32fc_s32fc_x2_rotator2_32fc(&input,&mut result, &phase_inc, &mut phase);
+    volk_rs::kernels::volk_32fc_s32fc_x2_rotator2_32fc(&mut result, &input, &phase_inc, &mut phase);
 }
 
 #[test]
@@ -77,5 +77,5 @@ fn volk_32fc_32f_multiply_32fc() {
     let input: AlignedVec<Complex<f32>> = AlignedVec::from_elem(Complex { re: 0.123, im: 0.576 }, 5000);
     let input_f: AlignedVec<f32> = AlignedVec::from_elem(0.5, 5000);
     let mut result: AlignedVec<Complex<f32>> = AlignedVec::from_elem(Complex { re: 0.0, im: 0.0 }, 5000);
-    volk_rs::kernels::volk_32fc_32f_multiply_32fc(&input, &mut result, &input_f);
+    volk_rs::kernels::volk_32fc_32f_multiply_32fc(&mut result, &input, &input_f);
 }

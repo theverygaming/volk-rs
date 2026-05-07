@@ -1,12 +1,12 @@
 use num_complex::Complex;
 use volk_sys::std_complex;
 
-pub fn volk_16i_32fc_dot_prod_32fc(input: &[core::ffi::c_short], output: &mut Complex<f32>, taps: &mut [Complex<f32>]) {
+pub fn volk_16i_32fc_dot_prod_32fc(result: &mut Complex<f32>, input: &[core::ffi::c_short], taps: &mut [Complex<f32>]) {
     assert!(input.len() == taps.len(), "mismatched lengths");
 
     unsafe {
         volk_sys::volk_16i_32fc_dot_prod_32fc.unwrap_unchecked()(
-            output as *mut Complex<f32> as *mut std_complex<f32>,
+            result as *mut Complex<f32> as *mut std_complex<f32>,
             input.as_ptr(),
             taps.as_mut_ptr() as *mut std_complex<f32>,
             taps.len() as core::ffi::c_uint,
@@ -30,7 +30,7 @@ pub fn volk_16i_32fc_dot_prod_32fc(input: &[core::ffi::c_short], output: &mut Co
 // TODO: volk_16i_max_star_horizontal_16i
 // TODO: volk_16i_permute_and_scalar_add
 
-pub fn volk_16i_s32f_convert_32f(input: &[i16], output: &mut [f32], scalar: f32) {
+pub fn volk_16i_s32f_convert_32f(output: &mut [f32], input: &[i16], scalar: f32) {
     assert!(output.len() == input.len(), "mismatched lengths");
 
     unsafe {
@@ -38,7 +38,7 @@ pub fn volk_16i_s32f_convert_32f(input: &[i16], output: &mut [f32], scalar: f32)
     }
 }
 
-pub fn volk_16i_s32f_convert_32f_u8(input: &[u8], output: &mut [f32], scalar: f32) {
+pub fn volk_16i_s32f_convert_32f_u8(output: &mut [f32], input: &[u8], scalar: f32) {
     assert!(input.len() % 2 == 0, "invalid length");
     assert!(output.len() == (input.len() / 2), "mismatched lengths");
 
@@ -73,19 +73,19 @@ pub enum GenericFloatVector<'a> {
     FC32(&'a[Complex<f32>]),
 }
 
-pub fn volk_32f_accumulator_s32f(input: GenericFloatVector, output: &mut f32) {
+pub fn volk_32f_accumulator_s32f(result: &mut f32, input: GenericFloatVector) {
     unsafe {
         match input {
             GenericFloatVector::F32(inp) => {
                 volk_sys::volk_32f_accumulator_s32f.unwrap_unchecked()(
-                    output,
+                    result,
                     inp.as_ptr() as *const f32,
                     inp.len() as core::ffi::c_uint,
                 );
             },
             GenericFloatVector::FC32(inp) => {
                 volk_sys::volk_32f_accumulator_s32f.unwrap_unchecked()(
-                    output,
+                    result,
                     inp.as_ptr() as *const f32,
                     (inp.len() as core::ffi::c_uint) * 2,
                 );
@@ -101,12 +101,12 @@ pub fn volk_32f_accumulator_s32f(input: GenericFloatVector, output: &mut f32) {
 // TODO: volk_32f_binary_slicer_8i
 // TODO: volk_32fc_32f_add_32fc
 
-pub fn volk_32fc_32f_dot_prod_32fc(input: &[Complex<f32>], output: &mut Complex<f32>, taps: &[f32]) {
+pub fn volk_32fc_32f_dot_prod_32fc(result: &mut Complex<f32>, input: &[Complex<f32>], taps: &[f32]) {
     assert!(input.len() == taps.len(), "mismatched lengths");
 
     unsafe {
         volk_sys::volk_32fc_32f_dot_prod_32fc.unwrap_unchecked()(
-            output as *mut Complex<f32> as *mut std_complex<f32>,
+            result as *mut Complex<f32> as *mut std_complex<f32>,
             input.as_ptr() as *const std_complex<f32>,
             taps.as_ptr(),
             input.len() as core::ffi::c_uint,
@@ -114,16 +114,16 @@ pub fn volk_32fc_32f_dot_prod_32fc(input: &[Complex<f32>], output: &mut Complex<
     }
 }
 
-pub fn volk_32fc_32f_multiply_32fc(input: &[Complex<f32>], output: &mut [Complex<f32>], input_f: &[f32]) {
-    assert!(input.len() == output.len(), "mismatched lengths");
-    assert!(input.len() == input_f.len(), "mismatched lengths");
+pub fn volk_32fc_32f_multiply_32fc(c: &mut [Complex<f32>], a: &[Complex<f32>], b: &[f32]) {
+    assert!(a.len() == c.len(), "mismatched lengths");
+    assert!(a.len() == b.len(), "mismatched lengths");
 
     unsafe {
         volk_sys::volk_32fc_32f_multiply_32fc.unwrap_unchecked()(
-            output.as_mut_ptr() as *mut std_complex<f32>,
-            input.as_ptr() as *const std_complex<f32>,
-            input_f.as_ptr(),
-            input.len() as core::ffi::c_uint,
+            c.as_mut_ptr() as *mut std_complex<f32>,
+            a.as_ptr() as *const std_complex<f32>,
+            b.as_ptr(),
+            a.len() as core::ffi::c_uint,
         );
     }
 }
@@ -160,11 +160,11 @@ pub fn volk_32fc_magnitude_32f(magnitude_vector: &mut [f32], complex_vector: &[C
 // TODO: volk_32fc_s32fc_multiply_32fc
 
 #[deprecated(since="0.0.2", note="replaced by `volk_32fc_s32fc_x2_rotator2_32fc`")]
-pub fn volk_32fc_s32fc_x2_rotator_32fc(input: &[Complex<f32>], output: &mut [Complex<f32>], phase_inc: Complex<f32>, phase: &mut Complex<f32>) {
-    volk_32fc_s32fc_x2_rotator2_32fc(input, output, &phase_inc, phase);
+pub fn volk_32fc_s32fc_x2_rotator_32fc(output: &mut [Complex<f32>], input: &[Complex<f32>], phase_inc: Complex<f32>, phase: &mut Complex<f32>) {
+    volk_32fc_s32fc_x2_rotator2_32fc(output, input, &phase_inc, phase);
 }
 
-pub fn volk_32fc_s32fc_x2_rotator2_32fc(input: &[Complex<f32>], output: &mut [Complex<f32>], phase_inc: &Complex<f32>, phase: &mut Complex<f32>) {
+pub fn volk_32fc_s32fc_x2_rotator2_32fc(output: &mut [Complex<f32>], input: &[Complex<f32>], phase_inc: &Complex<f32>, phase: &mut Complex<f32>) {
     assert!(input.len() == output.len(), "mismatched lengths");
 
     unsafe {
@@ -196,12 +196,12 @@ pub fn volk_32fc_s32fc_x2_rotator2_32fc(input: &[Complex<f32>], output: &mut [Co
 // TODO: volk_32f_expfast_32f
 // TODO: volk_32f_index_max_16u
 
-pub fn volk_32f_index_max_32u(input: &[f32], output: &mut u32) {
+pub fn volk_32f_index_max_32u(target: &mut u32, src0: &[f32]) {
     unsafe {
         volk_sys::volk_32f_index_max_32u.unwrap_unchecked()(
-            output,
-            input.as_ptr(),
-            input.len() as u32
+            target,
+            src0.as_ptr(),
+            src0.len() as u32
         );
     }
 }
@@ -214,7 +214,7 @@ pub fn volk_32f_index_max_32u(input: &[f32], output: &mut u32) {
 // TODO: volk_32f_s32f_add_32f
 // TODO: volk_32f_s32f_calc_spectral_noise_floor_32f
 
-pub fn volk_32f_s32f_convert_16i(input: &[f32], output: &mut [i16], scalar: f32) {
+pub fn volk_32f_s32f_convert_16i(output: &mut [i16], input: &[f32], scalar: f32) {
     assert!(output.len() == input.len(), "mismatched lengths");
 
     unsafe {
@@ -222,7 +222,7 @@ pub fn volk_32f_s32f_convert_16i(input: &[f32], output: &mut [i16], scalar: f32)
     }
 }
 
-pub fn volk_32f_s32f_convert_16i_u8(input: &[f32], output: &mut [u8], scalar: f32) {
+pub fn volk_32f_s32f_convert_16i_u8(output: &mut [u8], input: &[f32], scalar: f32) {
     assert!(output.len() % 2 == 0, "invalid length");
     assert!(input.len() == (output.len() / 2), "mismatched lengths");
 
@@ -231,7 +231,7 @@ pub fn volk_32f_s32f_convert_16i_u8(input: &[f32], output: &mut [u8], scalar: f3
     }
 }
 
-pub fn volk_32f_s32f_convert_32i(input: &[f32], output: &mut [i32], scalar: f32) {
+pub fn volk_32f_s32f_convert_32i(output: &mut [i32], input: &[f32], scalar: f32) {
     assert!(output.len() == input.len(), "mismatched lengths");
 
     unsafe {
@@ -239,7 +239,7 @@ pub fn volk_32f_s32f_convert_32i(input: &[f32], output: &mut [i32], scalar: f32)
     }
 }
 
-pub fn volk_32f_s32f_convert_32i_u8(input: &[f32], output: &mut [u8], scalar: f32) {
+pub fn volk_32f_s32f_convert_32i_u8(output: &mut [u8], input: &[f32], scalar: f32) {
     assert!(output.len() % 4 == 0, "invalid length");
     assert!(input.len() == (output.len() / 4), "mismatched lengths");
 
@@ -272,7 +272,7 @@ pub fn volk_32f_s32f_convert_32i_u8(input: &[f32], output: &mut [u8], scalar: f3
 // TODO: volk_32f_x2_subtract_32f
 // TODO: volk_32f_x3_sum_of_poly_32f
 
-pub fn volk_32i_s32f_convert_32f(input: &[i32], output: &mut [f32], scalar: f32) {
+pub fn volk_32i_s32f_convert_32f(output: &mut [f32], input: &[i32], scalar: f32) {
     assert!(output.len() == input.len(), "mismatched lengths");
 
     unsafe {
@@ -280,7 +280,7 @@ pub fn volk_32i_s32f_convert_32f(input: &[i32], output: &mut [f32], scalar: f32)
     }
 }
 
-pub fn volk_32i_s32f_convert_32f_u8(input: &[u8], output: &mut [f32], scalar: f32) {
+pub fn volk_32i_s32f_convert_32f_u8(output: &mut [f32], input: &[u8], scalar: f32) {
     assert!(input.len() % 4 == 0, "invalid length");
     assert!(output.len() == (input.len() / 4), "mismatched lengths");
 
