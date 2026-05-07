@@ -186,7 +186,20 @@ pub fn volk_32fc_s32fc_x2_rotator2_32fc(output: &mut [Complex<f32>], input: &[Co
 // TODO: volk_32fc_x2_add_32fc
 // TODO: volk_32fc_x2_conjugate_dot_prod_32fc
 // TODO: volk_32fc_x2_divide_32fc
-// TODO: volk_32fc_x2_dot_prod_32fc
+
+pub fn volk_32fc_x2_dot_prod_32fc(result: &mut Complex<f32>, input: &[Complex<f32>], taps: &[Complex<f32>]) {
+    assert!(input.len() == taps.len(), "mismatched lengths");
+
+    unsafe {
+        volk_sys::volk_32fc_x2_dot_prod_32fc.unwrap_unchecked()(
+            result as *mut Complex<f32> as *mut std_complex<f32>,
+            input.as_ptr() as *const std_complex<f32>,
+            taps.as_ptr() as *const std_complex<f32>,
+            input.len() as core::ffi::c_uint,
+        );
+    }
+}
+
 // TODO: volk_32fc_x2_multiply_32fc
 // TODO: volk_32fc_x2_multiply_conjugate_32fc
 // TODO: volk_32fc_x2_s32fc_multiply_conjugate_add_32fc
@@ -262,7 +275,20 @@ pub fn volk_32f_s32f_convert_32i_u8(output: &mut [u8], input: &[f32], scalar: f3
 // TODO: volk_32f_x2_add_32f
 // TODO: volk_32f_x2_divide_32f
 // TODO: volk_32f_x2_dot_prod_16i
-// TODO: volk_32f_x2_dot_prod_32f
+
+pub fn volk_32f_x2_dot_prod_32f(result: &mut f32, input: &[f32], taps: &[f32]) {
+    assert!(input.len() == taps.len(), "mismatched lengths");
+
+    unsafe {
+        volk_sys::volk_32f_x2_dot_prod_32f.unwrap_unchecked()(
+            result,
+            input.as_ptr(),
+            taps.as_ptr(),
+            input.len() as core::ffi::c_uint,
+        );
+    }
+}
+
 // TODO: volk_32f_x2_interleave_32fc
 // TODO: volk_32f_x2_max_32f
 // TODO: volk_32f_x2_min_32f
