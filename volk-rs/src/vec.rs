@@ -67,10 +67,10 @@ impl<T: Sized> Drop for AlignedVec<T> {
     }
 }
 
-// FIXME: check if this is fine lmao
-// :trolley:
-unsafe impl<T: Send> Send for AlignedVec<T> {}
-unsafe impl<T: Send> Sync for AlignedVec<T> {}
+// SAFETY: should be fine to implement these long as T also has them,
+// volk_malloc and volk_free should be thread safe
+unsafe impl<T: Send> Send for AlignedVec<T> where T: Send {}
+unsafe impl<T: Send> Sync for AlignedVec<T> where T: Sync {}
 
 impl<T: Sized> std::ops::Deref for AlignedVec<T> {
     type Target = [T];
