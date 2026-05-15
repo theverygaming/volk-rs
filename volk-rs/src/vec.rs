@@ -24,6 +24,8 @@ impl<T: Sized> AlignedVec<T> {
         }
     }
 
+    // SAFETY: this thing is completely unsafe lmfao
+    // BUG: // FIXME:
     pub fn new_zeroed(n: usize) -> Self {
         let mut v = Self::new(n);
         v.length = n;
