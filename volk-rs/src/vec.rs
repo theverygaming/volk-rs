@@ -20,15 +20,14 @@ impl<T: Sized> AlignedVec<T> {
                 Some(p) => p,
                 None => panic!("volk_malloc failed"),
             },
-            length: 0,
+            length: n,
         }
     }
 
     // SAFETY: this thing is completely unsafe lmfao
     // BUG: // FIXME:
     pub fn new_zeroed(n: usize) -> Self {
-        let mut v = Self::new(n);
-        v.length = n;
+        let v = Self::new(n);
         unsafe {
             std::ptr::write_bytes(v.ptr.as_ptr(), 0, n);
         }
@@ -46,8 +45,7 @@ impl<T: Sized> AlignedVec<T> {
 
 impl<T: Sized + Clone> AlignedVec<T> {
     pub fn from_elem(elem: T, n: usize) -> Self {
-        let mut v = Self::new(n);
-        v.length = n;
+        let v = Self::new(n);
         for i in 0..n {
             unsafe {
                 std::ptr::write(v.ptr.as_ptr().offset(i.try_into().unwrap()), elem.clone());
@@ -90,7 +88,6 @@ impl<T: Sized> std::ops::DerefMut for AlignedVec<T> {
 impl<T: Sized + Copy> Clone for AlignedVec<T> {
     fn clone(&self) -> Self {
         let mut new = Self::new(self.length);
-        new.length = self.length;
         new.copy_from_slice(self);
         new
     }
