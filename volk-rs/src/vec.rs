@@ -55,6 +55,12 @@ impl<T: Sized + Clone> AlignedVec<T> {
     }
 }
 
+impl<T: Sized + Clone + Default> AlignedVec<T> {
+    pub fn new_default(n: usize) -> Self {
+        Self::from_elem(Default::default(), n)
+    }
+}
+
 impl<T: Sized> Drop for AlignedVec<T> {
     fn drop(&mut self) {
         unsafe {
