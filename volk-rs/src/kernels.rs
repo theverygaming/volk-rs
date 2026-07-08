@@ -183,7 +183,20 @@ pub fn volk_32fc_s32fc_x2_rotator2_32fc(output: &mut [Complex<f32>], input: &[Co
 // TODO: volk_32fc_s32f_power_32fc
 // TODO: volk_32fc_s32f_power_spectrum_32f
 // TODO: volk_32fc_s32f_x2_power_spectral_density_32f
-// TODO: volk_32fc_x2_add_32fc
+
+pub fn volk_32fc_x2_add_32fc(result: &mut [Complex<f32>], a: &[Complex<f32>], b: &[Complex<f32>]) {
+    assert!(result.len() == a.len() && a.len() == b.len(), "mismatched lengths");
+
+    unsafe {
+        volk_sys::volk_32fc_x2_add_32fc.unwrap_unchecked()(
+            result.as_ptr() as *mut std_complex<f32>,
+            a.as_ptr() as *const std_complex<f32>,
+            b.as_ptr() as *const std_complex<f32>,
+            a.len() as core::ffi::c_uint,
+        );
+    }
+}
+
 // TODO: volk_32fc_x2_conjugate_dot_prod_32fc
 // TODO: volk_32fc_x2_divide_32fc
 
