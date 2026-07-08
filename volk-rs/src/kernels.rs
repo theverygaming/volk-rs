@@ -197,6 +197,19 @@ pub fn volk_32fc_x2_add_32fc(result: &mut [Complex<f32>], a: &[Complex<f32>], b:
     }
 }
 
+pub fn volk_32fc_x2_add_32fc_single(result: &mut [Complex<f32>], add: &[Complex<f32>]) {
+    assert!(result.len() == add.len(), "mismatched lengths");
+
+    unsafe {
+        volk_sys::volk_32fc_x2_add_32fc.unwrap_unchecked()(
+            result.as_ptr() as *mut std_complex<f32>,
+            result.as_ptr() as *const std_complex<f32>,
+            add.as_ptr() as *const std_complex<f32>,
+            add.len() as core::ffi::c_uint,
+        );
+    }
+}
+
 // TODO: volk_32fc_x2_conjugate_dot_prod_32fc
 // TODO: volk_32fc_x2_divide_32fc
 
